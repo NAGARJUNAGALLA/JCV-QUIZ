@@ -1,14 +1,13 @@
 const USERS_URL = "https://nagarjunagalla.github.io/JCV-QUIZ/users.json";
-const QUESTIONS_URL = "./questions.json";
+const QUESTIONS_URL = "https://nagarjunagalla.github.io/JCV-QUIZ/questions.json";
 
 const QuizLoader = {
     async sha256hex(message) {
         const msgBuffer = new TextEncoder().encode(message);
         const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
-        const hashHex = [...new Uint8Array(hashBuffer)]
+        return [...new Uint8Array(hashBuffer)]
             .map(b => b.toString(16).padStart(2, "0"))
             .join("");
-        return hashHex;
     },
 
     async login() {
@@ -20,9 +19,17 @@ const QuizLoader = {
             return;
         }
 
-        let users = await fetch(USERS_URL).then(r => r.json());
-        const user = users.find(u => u.username === username);
+        console.log("Fetching users…");
+        let users;
+        try {
+            users = await fetch(USERS_URL).then(r => r.json());
+        } catch (e) {
+            alert("Cannot load users.json");
+            console.log(e);
+            return;
+        }
 
+        const user = users.find(u => u.username === username);
         if (!user) {
             alert("Invalid username");
             return;
@@ -30,46 +37,60 @@ const QuizLoader = {
 
         const hashed = await this.sha256hex(password);
 
+        console.log("You entered hash:", hashed);
+        console.log("Stored hash:", user.passwordHash);
+
         if (hashed !== user.passwordHash) {
             alert("Wrong password");
             return;
         }
 
         localStorage.setItem("loggedUser", username);
-        this.loadQuiz();
+        this.startQuiz();
     },
 
-    async loadQuiz() {
+    async startQuiz() {
         let container = document.getElementById("quiz-container");
-        container.innerHTML = "<h2>Loading Questions...</h2>";
+        container.innerHTML = "<h3>Loading Questions…</h3>";
 
-        const questions = await fetch(QUESTIONS_URL).then(r => r.json());
-
-        let i = 0;
-        this.showQuestion(container, questions, i);
-    },
-
-    showQuestion(container, questions, i) {
-        if (i >= questions.length) {
-            container.innerHTML = "<h2>Quiz Completed!</h2>";
+        let questions;
+        try {
+            questions = await fetch(QUESTIONS_URL).then(r => r.json());
+        } catch (e) {
+            alert("Cannot load questions.json");
             return;
         }
 
-        const q = questions[i];
+        this.current = 0;
+        this.questions = questions;
+
+        this.showQuestion();
+    },
+
+    showQuestion() {
+        const q = this.questions[this.current];
+        const container = document.getElementById("quiz-container");
 
         container.innerHTML = `
-            <h3>Question ${i+1}</h3>
+            <h3>Question ${this.current + 1}</h3>
             <p>${q.q}</p>
-            <div class="options">
-                ${q.options.map((opt, idx) => 
-                    `<button onclick="QuizLoader.checkAnswer(${i}, ${idx}, ${q.answerId})">${opt}</button>`
-                ).join("")}
-            </div>
+            ${q.options.map((opt, i) =>
+                `<button onclick="QuizLoader.checkAnswer(${i}, ${q.answerId})">${opt}</button>`
+            ).join("")}
         `;
     },
 
-    checkAnswer(i, selected, correct) {
+    checkAnswer(selected, correct) {
         alert(selected === correct ? "Correct!" : "Wrong!");
-        this.loadQuiz();
+
+        this.current++;
+
+        if (this.current >= this.questions.length) {
+            document.getElementById("quiz-container").innerHTML =
+                "<h2>Quiz Completed!</h2>";
+            return;
+        }
+
+        this.showQuestion();
     }
 };
