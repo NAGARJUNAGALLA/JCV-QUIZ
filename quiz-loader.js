@@ -1,5 +1,5 @@
-const USERS_URL = "users.json";
-const QUESTIONS_URL = "questions.json";
+const USERS_URL = "./users.json";
+const QUESTIONS_URL = "./questions.json";
 
 const QuizLoader = {
     async sha256hex(message) {
