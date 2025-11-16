@@ -1,4 +1,4 @@
-const USERS_URL = "users.json";
+const USERS_URL = "https://nagarjunagalla.github.io/JCV-QUIZ/users.json";
 const QUESTIONS_URL = "./questions.json";
 
 const QuizLoader = {
