@@ -1,49 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Quiz System - Demo</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JCV Quiz</title>
 
 <style>
 body {
-  font-family: Arial, sans-serif;
-  background: #f5f5f5;
-  padding: 20px;
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    margin: 0;
+    padding: 20px;
 }
+
 #quiz-container {
-  max-width: 500px;
-  margin: auto;
-  padding: 20px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    margin: auto;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
-input, button {
-  width: 100%;
-  padding: 10px;
-  margin: 8px 0;
+
+button {
+    padding: 12px;
+    background: dodgerblue;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    width: 100%;
+    margin-top: 15px;
+    font-size: 16px;
 }
-.question-box {
-  margin: 20px 0;
+
+.option {
+    background: #ececec;
+    padding: 12px;
+    border-radius: 8px;
+    margin: 8px 0;
 }
-.options button {
-  width: 100%;
-  margin: 5px 0;
-  padding: 10px;
-}
+
+.correct { background: #c8ffc8 !important; }
+.wrong { background: #ffc8c8 !important; }
 </style>
 </head>
-
 <body>
 
-<div id="quiz-container">
-  <h2>Login</h2>
-  <input type="text" id="username" placeholder="Enter Username">
-  <input type="password" id="password" placeholder="Enter Password">
-  <button onclick="QuizLoader.login()">Login</button>
-</div>
+<h2 style="text-align:center;">JCV Quiz System</h2>
 
-<script src="quiz-loader.js?version=1"></script>
+<div id="quiz-container">Loading quiz...</div>
+
+<script src="script.js"></script>
 </body>
 </html>
